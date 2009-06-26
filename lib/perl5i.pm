@@ -5,13 +5,15 @@ use 5.010;
 
 use strict;
 use warnings;
+use utf8;
 use Module::Load;
 use IO::Handle;
 use Carp;
 use perl5i::DateTime;
 
-our $VERSION = '20090614';
+our $VERSION = '20090626';
 
+=encoding utf-8
 
 =head1 NAME
 
@@ -221,6 +223,13 @@ so they can be called on arrays and arrayrefs.
 L<autobox::dump> defines a C<perl> method that returns L<Data::Dumper>
 style serialization of the results of the expression.
 
+=head2 enc_utf8
+
+    say 'ພາສາລາວ'->enc_utf8;
+
+L<enc_utf8> returns the corresponding octet sequence of a string containing 
+utf8 characters. 
+
 
 =head1 BUGS
 
@@ -379,6 +388,16 @@ sub SCALAR::center {
     my $lpad            = $padlen - $rpad;
 
     return ' ' x $lpad . $string . ' ' x $rpad;
+}
+
+sub SCALAR::enc_utf8 {
+    my $string = shift;
+    
+    if (utf8::is_utf8($string)) {
+        utf8::encode($string);
+    }
+    
+    return $string;
 }
 
 1;
